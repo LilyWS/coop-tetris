@@ -1,3 +1,4 @@
+const Score = require('./Score');
 const Game = require('./Game');
 
-module.exports = {Game};
+module.exports = {Score, Game};
