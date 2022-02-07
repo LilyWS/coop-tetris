@@ -2,6 +2,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
 // const { authMiddleware } = require('./utils/auth');
+const session = require('express-session');
 const { typeDefs, resolvers } = require('./schemas');
 
 const db = require('./config/connection');
@@ -20,6 +21,16 @@ const server = new ApolloServer({
 });
 
 server.applyMiddleware({ app });
+
+var sessionMiddleware = session({ //shared session for socket. not using jwt.
+  secret: process.env.SECRET || 'test secret',
+  resave: true,
+  saveUninitialized: true
+});
+
+const httpServer = require('http').createServer(app);
+
+require("./socket")(httpServer, sessionMiddleware)
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
