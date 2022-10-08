@@ -28,6 +28,10 @@ function App() {
     })
   }, [])
 
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDownHandler, true)
+  }, [])
+
   const sTest = () => {
     console.log("wow");
     
@@ -36,6 +40,13 @@ function App() {
       senderId: socket.current.id,
     });
   };
+
+  const onKeyDownHandler = (e) => {
+    console.log("WOWO!!")
+    if (e.keyCode == 68) {
+      socket.current.emit('test');
+    }
+  }
 
   return (
     <div className="App">
