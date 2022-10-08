@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ApolloClient,
   InMemoryCache,
@@ -15,19 +15,31 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Game from './pages/Game';
 
+//https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
 const socketEndpoint = "localhost:3001"
 
 function App() {
+  const socket = useRef();
 
   useEffect(() => {
-    const socket = io(socketEndpoint);
-    socket.on("test", () => {
+    socket.current = io(socketEndpoint);
+    socket.current.on("connection", () => {
       console.log("hihihihihihi!!!!");
     })
   }, [])
 
+  const sTest = () => {
+    console.log("wow");
+    
+    socket.current.emit("test", {
+      body: "hi",
+      senderId: socket.current.id,
+    });
+  };
+
   return (
     <div className="App">
+      <button onClick={sTest}>test</button>
     </div>
   );
 }
