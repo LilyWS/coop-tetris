@@ -4,24 +4,13 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
+// const db = require('./config/connection');
+
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 
 const httpServer = http.createServer(app);
-
-// const io = new Server(httpServer, {
-//     cors: {
-//         origin: "*",
-//         methods: ["GET", "POST"],
-//     },
-// });
-
-// io.on("connection", (socket) => {
-//     console.log(`User Connected: ${socket.id}`);
-//     socket.emit("test");
-//     socket.emit("test");
-// });
 
 require("./socket")(httpServer);
 
