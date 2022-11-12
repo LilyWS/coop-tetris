@@ -1,10 +1,17 @@
 const { Server } = require('socket.io');
 const cors = require("cors");
 
+const { Score, Game } = require('../models');
+
 var x = 50;
 
-const connection = (socket, io) => {
+const connection = async (socket, io) => {
     console.log('got connection');
+    var game = await Game.findOne({ score: 20 }, (err, obj) => {
+        return obj;
+    })
+    console.log("real!!", game)
+
     socket.emit('connection', null);
 
     socket.on("keypress", key => {
