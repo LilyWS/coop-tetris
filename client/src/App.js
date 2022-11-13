@@ -19,20 +19,17 @@ const socketEndpoint = "localhost:3001"
 
 function App() {
 
-  // const sTest = () => {
-  //   console.log("wow");
-    
-  //   socket.current.emit("test", {
-  //     body: "hi",
-  //     senderId: socket.current.id,
-  //   });
-  // };
-
-
   return (
-    <div className="App">
-      <Game SEndpoint={socketEndpoint}/>
-    </div>
+    <Router>
+      <div>
+        <Route exact path="/">
+          <Home/>
+        </Route>
+        <Route exact path="/play/:matchID">
+          <Game SEndpoint={socketEndpoint}/>
+        </Route>
+      </div>
+    </Router>
   );
 }
 

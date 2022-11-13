@@ -1,9 +1,13 @@
 const { Server } = require('socket.io');
 const cors = require("cors");
-
 const { Score, Game } = require('../models');
 
+var matches = [] //will store matchesas we work with them
 var x = 50;
+
+const matchJoin = async (data, socket) => {
+
+}
 
 const connection = async (socket, io) => {
     console.log('got connection');
@@ -14,16 +18,19 @@ const connection = async (socket, io) => {
 
     socket.emit('connection', null);
 
+    socket.on("matchJoin", async (data) => matchJoin(data, socket));
+
     socket.on("keypress", key => {
         console.log(key)
         if (key == "a") {
-            x -= 5;
+            game.score -= 5;
         }else if (key == "e") {
-            x += 5;
+            game.score += 5;
         }
-        io.emit('move', x)
+        io.emit('move', game.score)
     })
 }
+
 
 module.exports = function(server){ //initialize socket 
     const io = new Server(server, {

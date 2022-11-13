@@ -1,6 +1,9 @@
 const { Schema, model } = require('mongoose');
 
 const gameSchema = new Schema ({
+    queryID: {
+        type: String
+    },
     score: {
         type: Number
     },

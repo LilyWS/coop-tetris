@@ -4,6 +4,7 @@ const Home = () => {
   return (
     <main>
         <h1>CPTetris</h1>
+        <button>Create Match</button>
     </main>
   );
 };
