@@ -6,7 +6,7 @@ import {
   createHttpLink,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import './index.css';
 
 import Header from './components/Header';
@@ -28,12 +28,10 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <div>
-          <Route exact path="/">
-            <Home/>
-          </Route>
-          <Route exact path="/play/:matchID">
-            <Game SEndpoint={socketEndpoint}/>
-          </Route>
+          <Routes>
+          <Route exact path="/" element={<Home/>}/>
+          <Route exact path="/play/:matchID" element={<Game SEndpoint={socketEndpoint}/>}/>
+          </Routes>
         </div>
       </Router>
     </ApolloProvider>
