@@ -1,4 +1,5 @@
 const { Score, Game } = require('../models');
+const {createQueryID} = require('../utils/gameMethods')
 
 const resolvers = {
     Query: {
@@ -8,7 +9,8 @@ const resolvers = {
     },
     Mutation: {
         createMatch: async (_, args) => {
-            const match = await Game.create({queryID: "hi!!!"});
+            let qID = createQueryID();
+            const match = await Game.create({queryID: qID});
             match.player1 = args.user;
             await match.save();
             return match;

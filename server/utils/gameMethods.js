@@ -2,7 +2,7 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 const charactersLength = characters.length;
 
 module.exports = {
-    createQueryID: (len = 5) => {
+    createQueryID: (len = 11) => {
         let result = '';
         for ( var i = 0; i < len; i++ ) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));

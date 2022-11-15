@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Canvas from '../components/Canvas';
 import io from 'socket.io-client';
+
+import './game.css';
 //https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
 const Game = (props) => {
 
   const socket = useRef(null);
+ 
+  const [board, setBoard] = useState(Array(22).fill().map(() => Array(12).fill(0)));
+  console.log(board);
 
   useEffect(() => {
     socket.current = io(props.SEndpoint);
@@ -19,14 +24,21 @@ const Game = (props) => {
   const canvasRef = useRef(null);
   
   const stats = useRef(50)
-  console.log(stats, "crud :(")
 
-  const draw = (ctx, frameCount) => {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  const draw = (ctx, frameCount, canvas) => {
+    // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.fillStyle = '#000000'
     ctx.beginPath()
     // console.log(stats);
-    ctx.arc(stats.current, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
+    for (let y = 0;y<board.length;y++){
+      for (let x = 0;x<board[y].length;x++){
+        if (board[y][x] == 0) {
+          let tl = canvas.width/12;
+          // ctx.fillStyle = white;
+          ctx.fillRect(x*tl, y*tl, tl, tl);
+        }
+        }
+    }
     ctx.fill()
   }
 
@@ -39,7 +51,7 @@ const Game = (props) => {
     //Our draw came here
     const render = () => {
       frameCount++
-      draw(context, frameCount)
+      draw(context, frameCount, canvas)
       animationFrameId = window.requestAnimationFrame(render)
     }
     render()
@@ -62,7 +74,7 @@ const Game = (props) => {
   }
 
   return (
-        <canvas ref={canvasRef} id="game-display"/>
+        <canvas ref={canvasRef} height={window.innerWidth/48*22} width={window.innerWidth/4} id="game-display"/>
   );
 };
 
