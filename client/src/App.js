@@ -17,19 +17,26 @@ import Game from './pages/Game';
 //https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
 const socketEndpoint = "localhost:3001"
 
+const client = new ApolloClient({
+  uri: 'http://localhost:3001/graphql',
+  cache: new InMemoryCache(),
+});
+
 function App() {
 
   return (
-    <Router>
-      <div>
-        <Route exact path="/">
-          <Home/>
-        </Route>
-        <Route exact path="/play/:matchID">
-          <Game SEndpoint={socketEndpoint}/>
-        </Route>
-      </div>
-    </Router>
+    <ApolloProvider client={client}>
+      <Router>
+        <div>
+          <Route exact path="/">
+            <Home/>
+          </Route>
+          <Route exact path="/play/:matchID">
+            <Game SEndpoint={socketEndpoint}/>
+          </Route>
+        </div>
+      </Router>
+    </ApolloProvider>
   );
 }
 
