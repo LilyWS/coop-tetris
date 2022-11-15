@@ -1,24 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
+import {useParams} from "react-router-dom";
 import Canvas from '../components/Canvas';
 import io from 'socket.io-client';
 
 import './game.css';
 //https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
 const Game = (props) => {
-
   const socket = useRef(null);
- 
+  const {matchID} = useParams();
+  console.log(matchID)
+  
   const [board, setBoard] = useState(Array(22).fill().map(() => Array(12).fill(0)));
-  console.log(board);
 
   useEffect(() => {
     socket.current = io(props.SEndpoint);
     socket.current.on("connection", () => {
-      console.log("hihihihihihi!!!!");
+      socket.current.emit('matchJoin', matchID);
     })
     socket.current.on('move', x => {
       stats.current = x;
     })
+  }, [])
+  
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDownHandler, true)
   }, [])
 
   const canvasRef = useRef(null);
@@ -61,9 +66,6 @@ const Game = (props) => {
     }
   }, [draw])
 
-  useEffect(() => {
-    document.addEventListener('keydown', onKeyDownHandler, true)
-  }, [])
 
   const onKeyDownHandler = (e) => {
     if (e.keyCode == 68) {

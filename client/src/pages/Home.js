@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { useMutation } from '@apollo/client';
 import { CREATE_MATCH } from '../utils/mutations';
+import { v4 as uuidv4 } from "uuid";
 
 import Header from '../components/Header';
+
+//TODO: KEEP TRACK OF UUID AND USE IT TO TRACK USER THROUGHOUT MATCH. SOCKET ID IS LESS RELIABLE BECAUSE THEY CAN REFRESH
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,8 +15,10 @@ const Home = () => {
   const [createMatchMutation, { error, data }] = useMutation(CREATE_MATCH);
 
   const createMatch = async () => {
+    let uid = uuidv4();
+    console.log(uid);
     const { data } = await createMatchMutation({
-      variables: { user: "testUseer" },
+      variables: { user: uid },
     });
 
     let path = `play/${data.createMatch.queryID}`;
