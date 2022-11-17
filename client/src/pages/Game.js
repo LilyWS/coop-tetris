@@ -14,11 +14,12 @@ const Game = (props) => {
 
   useEffect(() => {
     socket.current = io(props.SEndpoint);
-    socket.current.on("connection", () => {
-      socket.current.emit('matchJoin', matchID);
+    socket.current.emit('matchJoin', matchID);
+    socket.current.on('readyCheck', () => {
+      socket.current.emit("ready", matchID);
     })
-    socket.current.on('move', x => {
-      stats.current = x;
+    socket.current.on('render', ({placed}) => {
+      setBoard(placed);
     })
   }, [])
   
@@ -37,12 +38,16 @@ const Game = (props) => {
     // console.log(stats);
     for (let y = 0;y<board.length;y++){
       for (let x = 0;x<board[y].length;x++){
-        if (board[y][x] == 0) {
+        if (board[y][x] == 1) {
           let tl = canvas.width/12;
-          // ctx.fillStyle = white;
+          ctx.fillStyle = "#79eede";
+          ctx.fillRect(x*tl, y*tl, tl, tl);
+        }else if (board[y][x] == 2) {
+          let tl = canvas.width/12;
+          ctx.fillStyle = "#f12e48";
           ctx.fillRect(x*tl, y*tl, tl, tl);
         }
-        }
+      }
     }
     ctx.fill()
   }
