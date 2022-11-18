@@ -8,7 +8,6 @@ import './game.css';
 const Game = (props) => {
   const socket = useRef(null);
   const {matchID} = useParams();
-  console.log(matchID)
   
   const [board, setBoard] = useState(Array(22).fill().map(() => Array(12).fill(0)));
 
@@ -18,7 +17,22 @@ const Game = (props) => {
     socket.current.on('readyCheck', () => {
       socket.current.emit("ready", matchID);
     })
-    socket.current.on('render', ({placed}) => {
+    socket.current.on('render', ({p1CurrentPiece, p2CurrentPiece, placed}) => {
+      //prepare board to be rendered 
+      let p1Shape = p1CurrentPiece.shape[p1CurrentPiece.rot];
+      let p2Shape = p2CurrentPiece.shape[p1CurrentPiece.rot];
+      for(let y = 0; y<p1Shape.length; y++){
+
+        for(let x = 0; x<p1Shape[y].length; x++){
+          console.log(p1Shape[y][x]);
+          if(p1Shape[y][x]){
+            console.log("wow!")
+          }
+          placed[y+p1CurrentPiece.y][x+p1CurrentPiece.x] = p1Shape[y][x]
+        }
+      }
+      // console.log(p1Shape);
+      // console.log(placed)
       setBoard(placed);
     })
   }, [])

@@ -1,7 +1,7 @@
 const { Server } = require('socket.io');
 const cors = require("cors");
 const { Score, Game } = require('../models');
-
+const {getPieceQueue, pieceData, setPieceData} = require('../utils/gameMethods');
 var matches = [] //will store matchesas we work with them
 var x = 50;
 
@@ -11,22 +11,30 @@ const matchJoin = async (data, socket) => {
     var game = await Game.findOne({ queryID: data }, (err, obj) => {
         return obj;
     })
+    
     console.log(game)
     if (!matches[data]) { //are they the first player to join? if so, the match will not exist yet in our match array and they will be player1
         matches[data] = {
             qID: data,
+            running: false,
             p1: {
                 sid: socket.id, //keep track of each players socket ids
-                queue: null, //array of their next pieces
+                queue: [...getPieceQueue(true)], //array of their next pieces
                 ready: false
             },
             p2: {
                 sid: null,
-                queue: null,
+                queue: [...getPieceQueue(true)],
                 ready: false
             },
             board: { //for now we only keep track of placed objects. will eventually need multiple boards to keep trak of falling pieces as well 
-                placed: Array(22).fill().map(() => Array(12).fill(1))
+                p1CurrentPiece: {
+
+                },
+                p2CurrentPiece: {
+
+                },
+                placed: Array(22).fill().map(() => Array(12).fill(2))
             }
         }
         socket.join(data);
@@ -56,13 +64,25 @@ const playerReady = (queryID, socket) => {
 
 const startMatch = (queryID) => {
     console.log("started");
+    let match = matches[queryID]
+    let p1piece = match.p1.queue.shift();
+    let p2piece = match.p2.queue.shift();
+    console.log("pices", p1piece, p2piece);
+    match.board.p1CurrentPiece = {...setPieceData(p1piece)}
+    match.board.p2CurrentPiece = {...setPieceData(p2piece)}
+    console.log(matches[queryID])
+    matches[queryID].running = true;
 }
 
 
 const updateAll = () => {
     for (i in matches){
-        let match = matches[i];
-        io.to(match.qID).emit("render", match.board);
+        if (matches[i].running) {
+            let match = matches[i];
+            match.board.p1CurrentPiece.y += 1;
+            // console.log(match.board.p1CurrentPiece.y);
+            io.to(match.qID).emit("render", match.board);
+        }
     }
 }
 
